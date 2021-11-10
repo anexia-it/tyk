@@ -123,7 +123,7 @@ jobs:
           GPG_FINGERPRINT: 12B5D62C28F57592D1575BD51ED14C59E37DAC20
           PKG_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2.2.4
         with:
           name: deb
           retention-days: 1
@@ -131,7 +131,7 @@ jobs:
             dist/*.deb
             !dist/*PAYG*.deb
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2.2.4
         with:
           name: rpm
           retention-days: 1
@@ -139,7 +139,7 @@ jobs:
             dist/*.rpm
             !dist/*PAYG*.rpm
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2.2.4
         with:
           name: payg
           retention-days: 1
