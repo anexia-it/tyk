@@ -26,7 +26,7 @@ jobs:
         run: make build
 
       - name: Upload Build
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.3.0
         with:
           name: tyk-build
           path: ./tyk
