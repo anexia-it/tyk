@@ -26,10 +26,10 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Set up Python 3.5
+      - name: Set up Python 3.7
         uses: actions/setup-python@v1
         with:
-          python-version: 3.5
+          python-version: 3.7
 
       - run: sudo apt update && sudo apt install libluajit-5.1-dev
       - run: sudo pip3 install setuptools
