@@ -192,7 +192,7 @@ func urlRewrite(meta *apidef.URLRewriteMeta, r *http.Request) (string, error) {
 		log.Debug("URL Re-written to: ", newpath)
 
 		// put url_rewrite path to context to be used in ResponseTransformMiddleware
-		ctxSetUrlRewritePath(r, meta.Path)
+		ctxSetUrlRewritePath(r, path)
 	}
 
 	newpath = replaceTykVariables(r, newpath, true)
