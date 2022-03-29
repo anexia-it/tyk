@@ -369,6 +369,9 @@ type HttpServerOptionsConfig struct {
 
 	// Custom SSL ciphers. See list of ciphers here https://tyk.io/docs/basic-config-and-security/security/tls-and-ssl/#specify-tls-cipher-suites-for-tyk-gateway--tyk-dashboard
 	Ciphers []string `json:"ssl_ciphers"`
+
+	// Maximum accepted request body size in byte.
+	MaxRequestBodySize int64 `json:"max_request_body_size"`
 }
 
 type AuthOverrideConf struct {
@@ -818,7 +821,7 @@ type Config struct {
 	EnableJSVM bool `json:"enable_jsvm"`
 
 	// Set the execution timeout for JSVM plugins and virtal endpoints
-	JSVMTimeout int `json:"jsvm_timeout"`
+	JSVMTimeout            int `json:"jsvm_timeout"`
 	JSVMHTTPRequestTimeout int `json:"jsvm_http_request_timeout"`
 
 	// Disable virtual endpoints and the code will not be loaded into the VM when the API definition initialises.
