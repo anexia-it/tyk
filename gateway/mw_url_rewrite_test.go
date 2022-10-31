@@ -59,6 +59,11 @@ var testRewriterData = []struct {
 		"/test/val/(.*)/space/(.*)/and/then(.*)", "/change/to/$2/$1$3",
 		"/test/val/ONE/space/TWO/and/then?param1=this", "/change/to/TWO/ONE?param1=this",
 	},
+	{
+		"SpecialCharacters",
+		"/test\\&\\$\\%/(.*)", "/change/to/test%(\"/$1",
+		"/test%26%24%25/this", "/change/to/test%(\"/this",
+	},
 }
 
 type testRewriterCase struct {

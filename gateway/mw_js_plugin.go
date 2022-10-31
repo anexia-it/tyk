@@ -143,7 +143,7 @@ func (d *DynamicMiddleware) ProcessRequest(w http.ResponseWriter, r *http.Reques
 		SetHeaders:     map[string]string{},
 		DeleteHeaders:  []string{},
 		Body:           originalBody,
-		URL:            r.URL.String(),
+		URL:            urlPathWithQueryForMatching(r.URL),
 		Params:         r.URL.Query(),
 		AddParams:      map[string]string{},
 		ExtendedParams: map[string][]string{},

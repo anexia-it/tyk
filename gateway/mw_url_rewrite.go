@@ -39,7 +39,7 @@ var metaMatch = regexp.MustCompile(`\$tyk_meta.([A-Za-z0-9_\-\.]+)`)
 var secretsConfMatch = regexp.MustCompile(`\$secret_conf.([A-Za-z0-9[.\-\_]+)`)
 
 func (gw *Gateway) urlRewrite(meta *apidef.URLRewriteMeta, r *http.Request) (string, error) {
-	path := r.URL.String()
+	path := urlPathWithQueryForMatching(r.URL)
 	log.Debug("Inbound path: ", path)
 	newpath := path
 
@@ -501,6 +501,11 @@ func (m *URLRewriteMiddleware) ProcessRequest(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		log.Error("URL Rewrite failed, could not parse: ", p)
 	} else {
+		// As we take a decoded URL for matching and replacing, we need to make sure that the resulting query is encoded
+		if newURL.RawQuery != "" {
+			newURL.RawQuery = newURL.Query().Encode()
+		}
+
 		//Setting new path here breaks request middleware
 		//New path is set in DummyProxyHandler/Cache middleware
 		ctxSetURLRewriteTarget(r, newURL)

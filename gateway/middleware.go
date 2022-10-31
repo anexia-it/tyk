@@ -8,7 +8,9 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/TykTechnologies/tyk/rpc"
@@ -906,4 +908,17 @@ func parseForm(r *http.Request) {
 	}
 
 	r.ParseForm()
+}
+
+// Returns the decoded URL path together with the query from the given URL.
+func urlPathWithQueryForMatching(url *url.URL) string {
+	var buf strings.Builder
+	buf.WriteString(url.Path)
+
+	if url.ForceQuery || url.RawQuery != "" {
+		buf.WriteByte('?')
+		buf.WriteString(url.RawQuery)
+	}
+
+	return buf.String()
 }
