@@ -8,7 +8,9 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/TykTechnologies/tyk/internal/cache"
@@ -36,8 +38,9 @@ const (
 )
 
 var (
-	GlobalRate            = ratecounter.NewRateCounter(1 * time.Second)
-	orgSessionExpiryCache singleflight.Group
+	GlobalRate               = ratecounter.NewRateCounter(1 * time.Second)
+	orgSessionExpiryCache    singleflight.Group
+	queryPartEncodedReplacer = strings.NewReplacer("%26", "&", "%3D", "=")
 )
 
 type TykMiddleware interface {
@@ -905,4 +908,26 @@ func parseForm(r *http.Request) {
 	}
 
 	r.ParseForm()
+}
+
+// Returns the decoded URL path and query from the given URL for matching.
+func urlPathWithQueryForMatching(urlObject *url.URL) string {
+	var buf strings.Builder
+	buf.WriteString(urlObject.Path)
+
+	if urlObject.ForceQuery || urlObject.RawQuery != "" {
+		buf.WriteByte('?')
+		query, err := url.QueryUnescape(urlObject.RawQuery)
+		if err != nil {
+			query = urlObject.RawQuery
+		}
+		buf.WriteString(query)
+	}
+
+	return buf.String()
+}
+
+// Will escape a replaced query part according to RFC but without encoded "&" and "=".
+func escapeQueryPart(queryPart string) string {
+	return queryPartEncodedReplacer.Replace(url.QueryEscape(queryPart))
 }

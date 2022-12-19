@@ -39,7 +39,7 @@ var metaMatch = regexp.MustCompile(`\$tyk_meta.([A-Za-z0-9_\-\.]+)`)
 var secretsConfMatch = regexp.MustCompile(`\$secret_conf.([A-Za-z0-9[.\-\_]+)`)
 
 func (gw *Gateway) urlRewrite(meta *apidef.URLRewriteMeta, r *http.Request) (string, error) {
-	path := r.URL.String()
+	path := urlPathWithQueryForMatching(r.URL)
 	log.Debug("Inbound path: ", path)
 	newpath := path
 
@@ -170,7 +170,11 @@ func (gw *Gateway) urlRewrite(meta *apidef.URLRewriteMeta, r *http.Request) (str
 	// Make sure it matches the string
 	log.Debug("Rewriter checking matches, len is: ", len(matchGroups))
 	if len(matchGroups) > 0 {
-		newpath = rewriteToPath
+		newUrl, err := url.Parse(rewriteToPath)
+		if err != nil {
+			return "", err
+		}
+
 		// get the indices for the replacements:
 		replaceGroups := dollarMatch.FindAllStringSubmatch(rewriteToPath, -1)
 
@@ -184,14 +188,17 @@ func (gw *Gateway) urlRewrite(meta *apidef.URLRewriteMeta, r *http.Request) (str
 		}
 
 		for _, v := range replaceGroups {
-			newpath = strings.Replace(newpath, v[0], groupReplace[v[0]], -1)
+			newUrl.Path = strings.Replace(newUrl.Path, v[0], groupReplace[v[0]], -1)
+			newUrl.RawQuery = strings.Replace(newUrl.RawQuery, v[0], escapeQueryPart(groupReplace[v[0]]), -1)
 		}
+
+		newpath = newUrl.String()
 
 		log.Debug("URL Re-written from: ", path)
 		log.Debug("URL Re-written to: ", newpath)
 
 		// put url_rewrite path to context to be used in ResponseTransformMiddleware
-		ctxSetUrlRewritePath(r, path)
+		ctxSetUrlRewritePath(r, r.URL.Path)
 	}
 
 	newpath = gw.replaceTykVariables(r, newpath, true)
