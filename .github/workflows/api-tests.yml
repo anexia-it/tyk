@@ -153,7 +153,7 @@ jobs:
   
     - name: Comment on PR
       if: ${{ always() }} && github.event.issue.pull_request
-      uses: mshick/add-pr-comment@v1
+      uses: mshick/add-pr-comment@v2
       with:
         message: |
           **API tests result: ${{ steps.test_execution.outcome }}** ${{ env.STATUS }} 
