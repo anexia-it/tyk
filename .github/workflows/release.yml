@@ -185,7 +185,7 @@ jobs:
       - uses: docker/setup-buildx-action@v2
 
       - name: CI build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           push: true
           context: "."
@@ -279,7 +279,7 @@ jobs:
           ' > Dockerfile
 
       - name: install on ${{ matrix.distro }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: "."
           platforms: linux/${{ matrix.arch }}
@@ -332,7 +332,7 @@ jobs:
           ' > Dockerfile
 
       - name: install on ${{ matrix.distro }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: "."
           file: Dockerfile
